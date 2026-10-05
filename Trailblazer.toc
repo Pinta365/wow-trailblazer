@@ -3,7 +3,7 @@
 ## Title: Trailblazer
 ## Notes: Counts the footsteps your character takes, and how far you travel by every other means.
 ## Author: Pinta365@GitHub
-## Version: 0.1.0
+## Version: 0.1.1
 ## SavedVariables: TrailblazerDB
 ## IconTexture: Interface\AddOns\Trailblazer\media\icon
 ## AddonCompartmentFunc: Trailblazer_OnCompartmentClick
