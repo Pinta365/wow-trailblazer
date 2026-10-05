@@ -1,0 +1,9 @@
+ignore:
+  - .vscode
+  - .github
+  - .gitignore
+  - README.md
+  - .pkgmeta
+  - deno.json
+  - deno.lock
+  - icon.png

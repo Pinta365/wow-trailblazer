@@ -11,6 +11,13 @@ A World of Warcraft addon for **WoW Forever** that counts the footsteps your cha
 - **Milestones:** travel achievements in Bronze, Silver, Gold and Legendary tiers, with points, per character and account-wide.
 - **Stride calibration:** measure your own stride lengths if the built-in ones don't suit your character.
 
+## Download
+
+You can download Trailblazer from these popular sources:
+
+* [Wago Addons](https://addons.wago.io/addons/trailblazer)
+* [CurseForge](https://www.curseforge.com/wow/addons/trailblazer)
+
 ## Commands
 
 `/trailblazer` or `/trail`, followed by:
