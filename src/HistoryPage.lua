@@ -161,12 +161,6 @@ local function rankCharacters(keys)
   return rows
 end
 
-local function scopeLabel(scope)
-  if scope == "account" then return "All characters" end
-  if scope == "char" then return "This character" end
-  local char = TB.db.chars[scope]
-  return char and shortName(char) or "Unknown"
-end
 
 -- The character a single-character scope shows.
 local function scopeChar(scope)
@@ -333,10 +327,12 @@ function render()
   for view, b in pairs(win.viewButtons) do
     if view == cfg.view then b:LockHighlight() else b:UnlockHighlight() end
   end
-  win.metric:SetText(cfg.metric == "distance" and "Distance" or "Steps")
-  win.stack:SetText(cfg.stack == "mode" and "By travel" or "By character")
+  local scope = cfg.scope
+  if TB.db.chars[scope] == TB.char then scope = "char" end
+  win.metric:Select(cfg.metric)
+  win.stack:Select(cfg.stack)
   win.stack:SetShown(cfg.metric == "distance" and cfg.scope == "account")
-  win.scope:SetText(scopeLabel(cfg.scope))
+  win.scope:Select(scope)
 
   local peak, total, active, best = 0, 0, 0, nil
   local present = win.presentModes
@@ -515,6 +511,34 @@ local function button(text, width, onClick)
   return b
 end
 
+-- Two or more buttons side by side choosing one value of TB.db.chart[field], the chosen
+-- one lit like the view buttons. `options` = { { value, label, width }, ... }; the group
+-- is anchored by its right edge.
+local function segmented(field, options)
+  local group = CreateFrame("Frame", nil, win)
+  group:SetHeight(22)
+  group.buttons = {}
+  local x = 0
+  for i = #options, 1, -1 do
+    local value, label, width = options[i][1], options[i][2], options[i][3]
+    local b = button(label, width, function()
+      TB.db.chart[field] = value
+      renderGrow()
+    end)
+    b:SetParent(group)
+    b:SetPoint("TOPRIGHT", group, "TOPRIGHT", -x, 0)
+    x = x + width + 1
+    group.buttons[value] = b
+  end
+  group:SetWidth(x - 1)
+  function group:Select(chosen)
+    for value, b in pairs(self.buttons) do
+      if value == chosen then b:LockHighlight() else b:UnlockHighlight() end
+    end
+  end
+  return group
+end
+
 -- Draws the History page into its pane of the Trailblazer window.
 local function build(pane)
   win = CreateFrame("Frame", nil, pane)
@@ -533,21 +557,13 @@ local function build(pane)
     prevButton = b
   end
 
-  win.scope = button("", 130, function()
-    TB.db.chart.scope = TB.db.chart.scope == "account" and "char" or "account"
-    renderGrow()
-  end)
+  -- Each pair shows both choices with the active one lit.
+  win.scope = segmented("scope", { { "char", "Mine", 56 }, { "account", "All", 48 } })
   win.scope:SetPoint("TOPRIGHT", -14, -32)
-  win.metric = button("", 80, function()
-    TB.db.chart.metric = TB.db.chart.metric == "distance" and "steps" or "distance"
-    renderGrow()
-  end)
-  win.metric:SetPoint("RIGHT", win.scope, "LEFT", -4, 0)
-  win.stack = button("", 100, function()
-    TB.db.chart.stack = TB.db.chart.stack == "mode" and "char" or "mode"
-    renderGrow()
-  end)
-  win.stack:SetPoint("RIGHT", win.metric, "LEFT", -4, 0)
+  win.metric = segmented("metric", { { "steps", "Steps", 60 }, { "distance", "Distance", 80 } })
+  win.metric:SetPoint("TOPRIGHT", win.scope, "TOPLEFT", -10, 0)
+  win.stack = segmented("stack", { { "char", "Characters", 90 }, { "mode", "Travel", 64 } })
+  win.stack:SetPoint("TOPRIGHT", win.metric, "TOPLEFT", -10, 0)
 
   -- Plot area, period navigation above it, and a baseline, midline and top line with
   -- axis labels.
@@ -698,10 +714,11 @@ end
 
 TB.Window.Register("history", "History", function(pane)
   TB.db.chart = TB.db.chart or {}
-  TB.db.chart.view = TB.db.chart.view or "week"
-  TB.db.chart.metric = TB.db.chart.metric or "steps"
-  TB.db.chart.scope = TB.db.chart.scope or "char"
-  TB.db.chart.stack = TB.db.chart.stack or "char"
+  -- First open: this month's distance for all characters, stacked by travel mode.
+  TB.db.chart.view = TB.db.chart.view or "month"
+  TB.db.chart.metric = TB.db.chart.metric or "distance"
+  TB.db.chart.scope = TB.db.chart.scope or "account"
+  TB.db.chart.stack = TB.db.chart.stack or "mode"
   TB.db.chart.hidden = TB.db.chart.hidden or {}
   build(pane)
 end)
