@@ -35,7 +35,7 @@ You can download Trailblazer from these popular sources:
 | `calibrate` | Open the stride calibration window |
 | `reset` | Reset the session totals (`reset all` erases this character's history) |
 
-Right-click the panel to open the history.
+Right-click the panel to open the history. Trailblazer is also in the addons menu on the minimap: left-click for the history, right-click for milestones.
 
 ### Diagnostics
 

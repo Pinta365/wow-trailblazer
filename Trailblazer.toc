@@ -5,6 +5,10 @@
 ## Author: Pinta365@GitHub
 ## Version: 0.1.0
 ## SavedVariables: TrailblazerDB
+## IconTexture: Interface\AddOns\Trailblazer\media\icon
+## AddonCompartmentFunc: Trailblazer_OnCompartmentClick
+## AddonCompartmentFuncOnEnter: Trailblazer_OnCompartmentEnter
+## AddonCompartmentFuncOnLeave: Trailblazer_OnCompartmentLeave
 ## X-Curse-Project-ID: 1728848
 ## X-Wago-ID: QNl40ENe
 

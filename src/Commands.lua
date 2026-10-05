@@ -182,3 +182,21 @@ SlashCmdList.TRAILBLAZER = function(input)
     print("    Diagnostics: debug, strides, perf, whoami")
   end
 end
+
+-- Blizzard's addon compartment (the addons button on the minimap), wired up in the TOC.
+function Trailblazer_OnCompartmentClick(_, mouseButton)
+  if mouseButton == "RightButton" then TB.MilestonesPage.Toggle() else TB.HistoryPage.Toggle() end
+end
+
+function Trailblazer_OnCompartmentEnter(_, button)
+  GameTooltip:SetOwner(button, "ANCHOR_LEFT")
+  GameTooltip:AddLine("Trailblazer")
+  GameTooltip:AddDoubleLine("Distance today", TB.Distance(TB.History.DistanceToday()), 1, 1, 1, 1, 1, 1)
+  GameTooltip:AddDoubleLine("Steps today", TB.Grouped(TB.History.StepsToday()), 1, 1, 1, 1, 1, 1)
+  GameTooltip:AddLine("Left-click for history, right-click for milestones", 0.5, 0.5, 0.5)
+  GameTooltip:Show()
+end
+
+function Trailblazer_OnCompartmentLeave()
+  GameTooltip:Hide()
+end
