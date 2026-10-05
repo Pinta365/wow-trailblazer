@@ -1,0 +1,21 @@
+## Interface: 120100, 16001
+## AllowLoadGameType: standard, camelot
+## Title: Trailblazer
+## Notes: Counts the footsteps your character takes, and how far you travel by every other means.
+## Author: Pinta
+## Version: 0.1.0
+## SavedVariables: TrailblazerDB
+
+src\Core.lua
+src\History.lua
+src\Strides.lua
+src\Motion.lua
+src\Panel.lua
+src\Window.lua
+src\Calibrate.lua
+src\HistoryPage.lua
+src\Milestones.lua
+src\MilestonesPage.lua
+src\Toast.lua
+src\Options.lua
+src\Commands.lua
