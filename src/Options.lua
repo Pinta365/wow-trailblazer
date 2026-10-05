@@ -38,6 +38,10 @@ function Options.Register()
   checkbox("SHOWN", "Show panel", true, "The small panel with today's steps or distance and your current activity.",
     function() return TB.db.shown end,
     function(value) TB.Panel.SetShown(value) end)
+  checkbox("MINIMAP", "Show minimap button", true,
+    "A button on the minimap's edge: left-click for history, right-click for milestones. Trailblazer is also in the minimap's addons menu.",
+    function() return not TB.db.minimap.hide end,
+    function(value) TB.Broker.SetMinimapShown(value) end)
   local headline = proxy("HEADLINE", Settings.VarType.String, "Panel headline", "steps",
     function() return TB.db.headline end,
     function(value) TB.db.headline = value; TB.Panel.Refresh() end)

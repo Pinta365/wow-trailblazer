@@ -39,14 +39,19 @@ local function ledgerLines(tip, title, ledger)
   end
 end
 
+-- The session and all-time breakdown, shared with the broker's tooltip.
+function Panel.FillTooltip(tip, hint)
+  tip:AddLine("Trailblazer")
+  ledgerLines(tip, "This session", TB.session)
+  tip:AddLine(" ")
+  ledgerLines(tip, "All time", TB.char.lifetime)
+  tip:AddLine(" ")
+  tip:AddLine(hint, 0.5, 0.5, 0.5)
+end
+
 local function showTooltip(self)
   GameTooltip:SetOwner(self, "ANCHOR_TOP")
-  GameTooltip:AddLine("Trailblazer")
-  ledgerLines(GameTooltip, "This session", TB.session)
-  GameTooltip:AddLine(" ")
-  ledgerLines(GameTooltip, "All time", TB.char.lifetime)
-  GameTooltip:AddLine(" ")
-  GameTooltip:AddLine("Right-click for history  ·  /trailblazer for commands", 0.5, 0.5, 0.5)
+  Panel.FillTooltip(GameTooltip, "Right-click for history  ·  /trailblazer for commands")
   GameTooltip:Show()
 end
 
@@ -79,8 +84,10 @@ local function changed(...)
   return differs
 end
 
+-- Redraws the panel and the broker text, which shows the panel's headline.
 function Panel.Refresh()
-  if not panel or not panel:IsShown() then return end
+  local panelShown = panel and panel:IsShown()
+  if not panelShown and not TB.Broker.Active() then return end
   local byDistance = TB.db.headline == "distance"
   local todaySteps, sessionSteps = TB.History.StepsToday(), TB.session.steps
   local todayYards = byDistance and TB.History.DistanceToday() or 0
@@ -89,18 +96,23 @@ function Panel.Refresh()
   -- Compared at the precision shown: whole steps, and 10 yd for distances.
   local floor = math.floor
   if not changed(floor(todaySteps + 0.5), floor(sessionSteps + 0.5), floor(todayYards / 10),
-      floor(sessionYards / 10), doing, TB.db.units, TB.db.headline, TB.db.debug)
+      floor(sessionYards / 10), doing, TB.db.units, TB.db.headline, TB.db.debug, panelShown)
     and not TB.db.debug then
     return
   end
 
+  local headline, detail
   if byDistance then
-    panel.big:SetText(TB.Distance(todayYards) .. " today")
-    panel.small:SetText(("Session %s  ·  %s steps"):format(TB.Distance(sessionYards), TB.Grouped(sessionSteps)))
+    headline = TB.Distance(todayYards) .. " today"
+    detail = ("Session %s  ·  %s steps"):format(TB.Distance(sessionYards), TB.Grouped(sessionSteps))
   else
-    panel.big:SetText(TB.Grouped(todaySteps) .. " steps today")
-    panel.small:SetText(("Session %s  ·  %s"):format(TB.Grouped(sessionSteps), TB.Distance(sessionYards)))
+    headline = TB.Grouped(todaySteps) .. " steps today"
+    detail = ("Session %s  ·  %s"):format(TB.Grouped(sessionSteps), TB.Distance(sessionYards))
   end
+  TB.Broker.SetText(headline)
+  if not panelShown then return end
+  panel.big:SetText(headline)
+  panel.small:SetText(detail)
   panel.now:SetText(doing)
 
   if TB.db.debug then

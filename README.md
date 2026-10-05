@@ -8,7 +8,8 @@ A World of Warcraft addon for **WoW Forever** that counts the footsteps your cha
 
 - **Step counting** from your actual movement, using stride lengths measured for every Forever race and sex. Running, walking, backpedaling and strafing are tracked separately.
 - **Distance by travel mode:** on foot, mounted, shapeshifted (druid forms, Ghost Wolf), swimming, jumping and falling, flight paths (with the fares you paid), boats, zeppelins and trams, and corpse runs as a ghost.
-- **A small panel** with today's steps, the session so far and what you're doing. Hover it for the full breakdown.
+- **A small panel** with today's steps or distance, the session so far and what you're doing. Hover it for the full breakdown.
+- **Broker and minimap button:** the same headline in any LibDataBroker display (Titan Panel, ChocolateBar, data bars), plus a minimap button and an entry in the minimap's addons menu.
 - **History:** week, month and year charts of steps or distance for one character or all of them, stacked by character (in class colours) or by travel mode, with a filterable legend.
 - **Milestones:** travel achievements in Bronze, Silver, Gold and Legendary tiers, with points, per character and account-wide.
 - **Stride calibration:** measure your own stride lengths if the built-in ones don't suit your character.
@@ -44,7 +45,7 @@ You can download Trailblazer from these popular sources:
 | `calibrate` | Open the stride calibration window |
 | `reset` | Reset the session totals (`reset all` erases this character's history) |
 
-Right-click the panel to open the history. Trailblazer is also in the addons menu on the minimap: left-click for the history, right-click for milestones.
+Right-click the panel to open the history. On the minimap button, the broker and the minimap's addons menu: left-click for the history, right-click for milestones.
 
 ### Diagnostics
 

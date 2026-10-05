@@ -12,11 +12,17 @@
 ## X-Curse-Project-ID: 1728848
 ## X-Wago-ID: QNl40ENe
 
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+libs\LibDBIcon-1.0\lib.xml
+
 src\Core.lua
 src\History.lua
 src\Strides.lua
 src\Motion.lua
 src\Panel.lua
+src\Broker.lua
 src\Window.lua
 src\Calibrate.lua
 src\HistoryPage.lua

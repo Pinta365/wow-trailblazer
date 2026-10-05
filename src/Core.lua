@@ -31,6 +31,7 @@ local accountDefaults = {
   headline = "steps",  -- what the panel shows big: "steps" or "distance" today
   debug   = false,
   anchor  = { point = "CENTER", x = 0, y = -180 },
+  minimap = { hide = false },  -- LibDBIcon keeps the button's position here too
   strides = {},   -- ["Race:sex"][gait] = { sum, runs } from calibration
 }
 
@@ -179,6 +180,7 @@ boot:SetScript("OnEvent", function(self, event, name)
 
     TB.Strides.ResolveBody()
     TB.Motion.Start()
+    TB.Broker.Start()
     TB.Panel.Build()
     TB.Milestones.Start()
     TB.Options.Register()
