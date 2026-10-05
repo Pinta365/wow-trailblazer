@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '**'
+
+permissions:
+  contents: write
+
+jobs:
+  call-workflow:
+    uses: Pinta365/Pinta365/.github/workflows/addon-release.yml@main
+    with:
+      addon_name: "Trailblazer"
+      cf_url: "https://www.curseforge.com/wow/addons/trailblazer"
+      wago_url: "https://addons.wago.io/addons/trailblazer"
+    secrets:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
