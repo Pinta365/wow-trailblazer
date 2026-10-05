@@ -2,6 +2,8 @@
 
 A World of Warcraft addon for **WoW Forever** that counts the footsteps your character takes and how far you travel by every other means.
 
+![Trailblazer's history: a month of travel across all characters, stacked by travel type](assets/gallery-history.png)
+
 ## Features
 
 - **Step counting** from your actual movement, using stride lengths measured for every Forever race and sex. Running, walking, backpedaling and strafing are tracked separately.
@@ -10,6 +12,13 @@ A World of Warcraft addon for **WoW Forever** that counts the footsteps your cha
 - **History:** week, month and year charts of steps or distance for one character or all of them, stacked by character (in class colours) or by travel mode, with a filterable legend.
 - **Milestones:** travel achievements in Bronze, Silver, Gold and Legendary tiers, with points, per character and account-wide.
 - **Stride calibration:** measure your own stride lengths if the built-in ones don't suit your character.
+
+## Screenshots
+
+<p>
+  <img src="assets/gallery-tooltip.png" alt="The panel and its tooltip: steps and distance by gait and travel type" width="25%">
+  <img src="assets/gallery-milestones.png" alt="Milestones: tiered travel achievements with progress and dates" width="72%">
+</p>
 
 ## Download
 

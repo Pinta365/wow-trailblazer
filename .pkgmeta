@@ -6,4 +6,4 @@ ignore:
   - .pkgmeta
   - deno.json
   - deno.lock
-  - icon.png
+  - assets
