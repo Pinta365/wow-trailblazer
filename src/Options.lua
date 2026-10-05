@@ -34,10 +34,19 @@ function Options.Register()
   local layout
   category, layout = Settings.RegisterVerticalLayoutCategory("Trailblazer")
 
-  layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Step panel"))
-  checkbox("SHOWN", "Show step panel", true, "The small panel with today's steps and your current activity.",
+  layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Panel"))
+  checkbox("SHOWN", "Show panel", true, "The small panel with today's steps or distance and your current activity.",
     function() return TB.db.shown end,
     function(value) TB.Panel.SetShown(value) end)
+  local headline = proxy("HEADLINE", Settings.VarType.String, "Panel headline", "steps",
+    function() return TB.db.headline end,
+    function(value) TB.db.headline = value; TB.Panel.Refresh() end)
+  Settings.CreateDropdown(category, headline, function()
+    local container = Settings.CreateControlTextContainer()
+    container:Add("steps", "Steps today")
+    container:Add("distance", "Distance today")
+    return container:GetData()
+  end, "What the panel shows in large text. Distance counts every way of travelling, mounted and flying included.")
   checkbox("LOCKED", "Lock panel position", false, "Stop the panel from being dragged.",
     function() return TB.db.locked end,
     function(value) TB.db.locked = value end)

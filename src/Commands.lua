@@ -1,7 +1,7 @@
 local ADDON, TB = ...
 
--- Slash commands: /trailblazer (or /trail) followed by a subcommand; no subcommand toggles
--- the panel.
+-- Slash commands: /trailblazer (or /trail) followed by a subcommand; on its own it lists
+-- them.
 
 local function printLedger(title, ledger)
   TB.Say("%s: %s steps, %s jumps, %s mount jumps", title, TB.Grouped(ledger.steps),
@@ -175,10 +175,10 @@ SlashCmdList.TRAILBLAZER = function(input)
   local handler = handlers[cmd]
   if handler then
     handler(arg)
-  elseif cmd == "" then
-    TB.Panel.SetShown(not TB.db.shown)
   else
-    TB.Say("/trailblazer [history|milestones|stats|options|show|hide|lock|unlock|units metric|imperial|calibrate|reset [all]]")
+    TB.Say("Commands: /trailblazer (or /trail) followed by")
+    print("    history, milestones, stats, options, show, hide, lock, unlock,")
+    print("    units metric / imperial, calibrate, reset (reset all erases this character)")
     print("    Diagnostics: debug, strides, perf, whoami")
   end
 end

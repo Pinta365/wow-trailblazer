@@ -77,6 +77,16 @@ function History.StepsToday()
   return r and r.steps or 0
 end
 
+-- Yards travelled today by every means.
+function History.DistanceToday()
+  local r = TB.char.days[(History.Today())]
+  local sum = 0
+  if r then
+    for _, yards in pairs(r.yards) do sum = sum + yards end
+  end
+  return sum
+end
+
 local function addRecord(into, r)
   into.steps = into.steps + r.steps
   into.jumps = into.jumps + r.jumps

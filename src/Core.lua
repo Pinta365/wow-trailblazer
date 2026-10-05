@@ -28,6 +28,7 @@ local accountDefaults = {
   shown   = true,
   locked  = false,
   units   = "km",
+  headline = "steps",  -- what the panel shows big: "steps" or "distance" today
   debug   = false,
   anchor  = { point = "CENTER", x = 0, y = -180 },
   strides = {},   -- ["Race:sex"][gait] = { sum, runs } from calibration

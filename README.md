@@ -24,7 +24,7 @@ You can download Trailblazer from these popular sources:
 
 | Command | What it does |
 | --- | --- |
-| *(nothing)* | Show or hide the panel |
+| *(nothing)* or `help` | List the commands |
 | `history` | Open the History tab |
 | `milestones` | Open the Milestones tab |
 | `stats` | Print today's, the session's and all-time totals |

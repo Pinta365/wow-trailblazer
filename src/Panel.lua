@@ -60,25 +60,47 @@ local function activity()
   return TB.MODE_LABEL[p.mode] or p.mode
 end
 
+local function sessionDistance()
+  local sum = 0
+  for _, yards in pairs(TB.session.yards) do sum = sum + yards end
+  return sum
+end
+
 -- What the panel last showed; text is only rebuilt when something visible changes.
-local shownToday, shownSession, shownDistance, shownActivity, shownUnits, shownDebug
+local shown = {}
+
+-- Records `values` as shown and reports whether any differ from last time.
+local function changed(...)
+  local differs = false
+  for i = 1, select("#", ...) do
+    local v = select(i, ...)
+    if shown[i] ~= v then shown[i], differs = v, true end
+  end
+  return differs
+end
 
 function Panel.Refresh()
   if not panel or not panel:IsShown() then return end
-  local today, session = math.floor(TB.History.StepsToday() + 0.5), math.floor(TB.session.steps + 0.5)
-  local distance = math.floor(TB.session.yards.foot / 10)  -- 10 yd is below the shown precision
+  local byDistance = TB.db.headline == "distance"
+  local todaySteps, sessionSteps = TB.History.StepsToday(), TB.session.steps
+  local todayYards = byDistance and TB.History.DistanceToday() or 0
+  local sessionYards = byDistance and sessionDistance() or TB.session.yards.foot
   local doing = activity()
-  if today == shownToday and session == shownSession and distance == shownDistance
-    and doing == shownActivity and TB.db.units == shownUnits
-    and TB.db.debug == shownDebug and not TB.db.debug then
+  -- Compared at the precision shown: whole steps, and 10 yd for distances.
+  local floor = math.floor
+  if not changed(floor(todaySteps + 0.5), floor(sessionSteps + 0.5), floor(todayYards / 10),
+      floor(sessionYards / 10), doing, TB.db.units, TB.db.headline, TB.db.debug)
+    and not TB.db.debug then
     return
   end
-  shownToday, shownSession, shownDistance, shownActivity, shownUnits, shownDebug =
-    today, session, distance, doing, TB.db.units, TB.db.debug
 
-  panel.big:SetText(TB.Grouped(today) .. " steps today")
-  panel.small:SetText(("Session %s  ·  %s"):format(
-    TB.Grouped(session), TB.Distance(TB.session.yards.foot)))
+  if byDistance then
+    panel.big:SetText(TB.Distance(todayYards) .. " today")
+    panel.small:SetText(("Session %s  ·  %s steps"):format(TB.Distance(sessionYards), TB.Grouped(sessionSteps)))
+  else
+    panel.big:SetText(TB.Grouped(todaySteps) .. " steps today")
+    panel.small:SetText(("Session %s  ·  %s"):format(TB.Grouped(sessionSteps), TB.Distance(sessionYards)))
+  end
   panel.now:SetText(doing)
 
   if TB.db.debug then
