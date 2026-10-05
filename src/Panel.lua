@@ -16,12 +16,12 @@ local function ledgerLines(tip, title, ledger)
   end
   for _, mode in ipairs(TB.MODES) do
     local yards = ledger.yards[mode]
-    if yards > 0 then
+    if yards >= TB.MIN_SHOWN_YARDS then
       tip:AddDoubleLine(TB.MODE_LABEL[mode], TB.Distance(yards), 0.8, 0.8, 0.8, 1, 1, 1)
     end
     for _, gait in ipairs(TB.STYLES_OF[mode] or {}) do
       local yards = ledger.gaitYards[gait]
-      if yards > 0 then
+      if yards >= TB.MIN_SHOWN_YARDS then
         local amount = mode == "foot"
           and ("%s steps  ·  %s"):format(TB.Grouped(ledger.gaitSteps[gait]), TB.Distance(yards))
           or TB.Distance(yards)

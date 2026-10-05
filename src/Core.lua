@@ -135,6 +135,9 @@ function TB.Money(copper)
   return C_CurrencyInfo.GetCoinTextureString(copper)
 end
 
+-- Distances under a yard read as "0 m"; lists leave them out.
+TB.MIN_SHOWN_YARDS = 1
+
 -- "3 flights · 4s 20c" (with coin icons).
 function TB.FlightsText(flights, spent)
   return ("%d flight%s  ·  %s"):format(flights, flights == 1 and "" or "s", TB.Money(spent))

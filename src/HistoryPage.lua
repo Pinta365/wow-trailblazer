@@ -221,7 +221,7 @@ local function showBarTooltip(bar)
     end
     for _, mode in ipairs(TB.MODES) do
       local yards = r.yards[mode]
-      if yards and yards > 0 then
+      if yards and yards >= TB.MIN_SHOWN_YARDS then
         -- Modes switched off in the legend stay listed, greyed, so their numbers are at hand.
         if TB.db.chart.hidden[mode] then
           GameTooltip:AddDoubleLine(TB.MODE_LABEL[mode], TB.Distance(yards), 0.5, 0.5, 0.5, 0.5, 0.5, 0.5)
@@ -345,7 +345,7 @@ function render()
     if v > 0 and (not best or v > valueOf(best.record)) then best = b end
     if b.record then
       for mode, yards in pairs(b.record.yards) do
-        if yards > 0 then present[mode] = true end
+        if yards >= TB.MIN_SHOWN_YARDS then present[mode] = true end
       end
     end
   end

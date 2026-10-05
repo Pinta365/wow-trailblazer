@@ -7,12 +7,12 @@ local function printLedger(title, ledger)
   TB.Say("%s: %s steps, %s jumps, %s mount jumps", title, TB.Grouped(ledger.steps),
     TB.Grouped(ledger.jumps), TB.Grouped(ledger.mountJumps))
   for _, mode in ipairs(TB.MODES) do
-    if ledger.yards[mode] > 0 then
+    if ledger.yards[mode] >= TB.MIN_SHOWN_YARDS then
       print(("    %s: %s"):format(TB.MODE_LABEL[mode], TB.Distance(ledger.yards[mode])))
     end
     for _, gait in ipairs(TB.STYLES_OF[mode] or {}) do
       local yards = ledger.gaitYards[gait]
-      if yards > 0 then
+      if yards >= TB.MIN_SHOWN_YARDS then
         local steps = mode == "foot" and (TB.Grouped(ledger.gaitSteps[gait]) .. " steps, ") or ""
         print(("        %s: %s%s"):format(TB.GAIT_LABEL[gait], steps, TB.Distance(yards)))
       end
