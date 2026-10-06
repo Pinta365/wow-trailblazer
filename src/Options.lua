@@ -6,9 +6,12 @@ local Options = {}
 TB.Options = Options
 
 local category
+local settings = {}  -- every registered setting, for "Reset all settings"
 
 local function proxy(variable, varType, name, default, get, set)
-  return Settings.RegisterProxySetting(category, "TRAILBLAZER_" .. variable, varType, name, default, get, set)
+  local setting = Settings.RegisterProxySetting(category, "TRAILBLAZER_" .. variable, varType, name, default, get, set)
+  table.insert(settings, setting)
+  return setting
 end
 
 local function checkbox(variable, name, default, tooltip, get, set)
@@ -22,6 +25,32 @@ local function addButton(layout, name, buttonText, onClick, tooltip)
   layout:AddInitializer(CreateSettingsButtonInitializer(name, buttonText, onClick, tooltip, true))
 end
 
+local function resetPanelPosition()
+  local a = TB.DEFAULTS.anchor
+  TB.db.anchor.point, TB.db.anchor.x, TB.db.anchor.y = a.point, a.x, a.y
+  TB.Panel.Place()
+end
+
+-- Back to TB.DEFAULTS for every preference, through the settings so the page redraws.
+-- Totals, history, milestones and stride calibrations are data and are kept.
+local function resetSettings()
+  for _, setting in ipairs(settings) do setting:SetValueToDefault() end
+  resetPanelPosition()
+  TB.db.chart = CopyTable(TB.DEFAULTS.chart)
+  TB.HistoryPage.Redraw()
+  TB.Say("All settings reset to their defaults.")
+end
+
+StaticPopupDialogs.TRAILBLAZER_RESET_SETTINGS = {
+  text = "Reset all Trailblazer settings to their defaults? Your totals, history, milestones and stride calibrations are kept.",
+  button1 = YES,
+  button2 = NO,
+  OnAccept = resetSettings,
+  timeout = 0,
+  whileDead = true,
+  hideOnEscape = true,
+}
+
 -- Opening one of our windows from the options page: close the page so it isn't on top.
 local function fromOptions(open)
   return function()
@@ -31,18 +60,19 @@ local function fromOptions(open)
 end
 
 function Options.Register()
+  local defaults = TB.DEFAULTS
   local layout
   category, layout = Settings.RegisterVerticalLayoutCategory("Trailblazer")
 
   layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Panel"))
-  checkbox("SHOWN", "Show panel", true, "The small panel with today's steps or distance and your current activity.",
+  checkbox("SHOWN", "Show panel", defaults.shown, "The small panel with today's steps or distance and your current activity.",
     function() return TB.db.shown end,
     function(value) TB.Panel.SetShown(value) end)
-  checkbox("MINIMAP", "Show minimap button", true,
-    "A button on the minimap's edge: left-click for history, right-click for milestones. Trailblazer is also in the minimap's addons menu.",
+  checkbox("MINIMAP", "Show minimap button", not defaults.minimap.hide,
+    "A button on the minimap's edge: left-click for history, right-click for milestones, middle-click for options. Trailblazer is also in the minimap's addons menu.",
     function() return not TB.db.minimap.hide end,
     function(value) TB.Broker.SetMinimapShown(value) end)
-  local headline = proxy("HEADLINE", Settings.VarType.String, "Panel headline", "steps",
+  local headline = proxy("HEADLINE", Settings.VarType.String, "Panel headline", defaults.headline,
     function() return TB.db.headline end,
     function(value) TB.db.headline = value; TB.Panel.Refresh() end)
   Settings.CreateDropdown(category, headline, function()
@@ -51,21 +81,18 @@ function Options.Register()
     container:Add("distance", "Distance today")
     return container:GetData()
   end, "What the panel shows in large text. Distance counts every way of travelling, mounted and flying included.")
-  checkbox("LOCKED", "Lock panel position", false, "Stop the panel from being dragged.",
+  checkbox("LOCKED", "Lock panel position", defaults.locked, "Stop the panel from being dragged.",
     function() return TB.db.locked end,
     function(value) TB.db.locked = value end)
-  checkbox("DEBUG", "Show debug readout", false,
+  checkbox("DEBUG", "Show debug readout", defaults.debug,
     "Adds a line to the panel with the position source, mode, gait, speed and stride in use.",
     function() return TB.db.debug end,
     function(value) TB.db.debug = value; TB.Panel.Refresh() end)
-  addButton(layout, "Panel position", "Reset",
-    function()
-      TB.db.anchor.point, TB.db.anchor.x, TB.db.anchor.y = "CENTER", 0, -180
-      TB.Panel.Place()
-    end, "Move the panel back to its starting spot.")
+  addButton(layout, "Panel position", "Reset", resetPanelPosition,
+    "Move the panel back to its starting spot.")
 
   layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Display"))
-  local units = proxy("UNITS", Settings.VarType.String, "Units", "km",
+  local units = proxy("UNITS", Settings.VarType.String, "Units", defaults.units,
     function() return TB.db.units end,
     function(value) TB.db.units = value; TB.Panel.Refresh() end)
   Settings.CreateDropdown(category, units, function()
@@ -76,7 +103,7 @@ function Options.Register()
   end, "Units for every distance Trailblazer shows.")
 
   layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Calibration and history"))
-  checkbox("ONE_FOOT", "Count one foot when calibrating", false,
+  checkbox("ONE_FOOT", "Count one foot when calibrating", defaults.countOneFoot,
     "Doubles the footfall count you enter, for characters whose steps are too quick to count.",
     function() return TB.db.countOneFoot end,
     function(value) TB.db.countOneFoot = value end)
@@ -98,9 +125,16 @@ function Options.Register()
     function() StaticPopup_Show("TRAILBLAZER_WIPE") end,
     "Erase this character's lifetime totals and history. Other characters are kept.")
 
+  layout:AddInitializer(CreateSettingsListSectionHeaderInitializer("Settings"))
+  addButton(layout, "All settings", "Reset",
+    function() StaticPopup_Show("TRAILBLAZER_RESET_SETTINGS") end,
+    "Put every setting on this page, the panel position and the history chart's choices back to their defaults. Totals, history, milestones and stride calibrations are kept.")
+
   Settings.RegisterAddOnCategory(category)
 end
 
+-- The Trailblazer window is closed first; it would sit on top of the options page.
 function Options.Open()
+  TB.Window.Close()
   Settings.OpenToCategory(category:GetID())
 end

@@ -51,7 +51,7 @@ end
 
 local function showTooltip(self)
   GameTooltip:SetOwner(self, "ANCHOR_TOP")
-  Panel.FillTooltip(GameTooltip, "Right-click for history  ·  /trailblazer for commands")
+  Panel.FillTooltip(GameTooltip, TB.CLICK_HINT)
   GameTooltip:Show()
 end
 
@@ -167,6 +167,7 @@ function Panel.Build()
   panel.probe:SetPoint("TOPLEFT", panel.now, "BOTTOMLEFT", 0, -4)
 
   panel:SetScript("OnDragStart", function(self)
+    self.dragged = true
     if not TB.db.locked then self:StartMoving() end
   end)
   panel:SetScript("OnDragStop", function(self)
@@ -174,8 +175,13 @@ function Panel.Build()
     local point, _, _, x, y = self:GetPoint()
     TB.db.anchor.point, TB.db.anchor.x, TB.db.anchor.y = point, x, y
   end)
-  panel:SetScript("OnMouseUp", function(_, mouseButton)
-    if mouseButton == "RightButton" then TB.HistoryPage.Toggle() end
+  -- Left button also drags; the release that ends a drag is not a click.
+  panel:SetScript("OnMouseUp", function(self, mouseButton)
+    if self.dragged then
+      self.dragged = false
+    else
+      TB.LauncherClick(mouseButton)
+    end
   end)
   panel:SetScript("OnEnter", showTooltip)
   panel:SetScript("OnLeave", GameTooltip_Hide)

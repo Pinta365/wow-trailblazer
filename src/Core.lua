@@ -24,16 +24,22 @@ TB.GAIT_LABEL = {
   swimAhead = "Swimming forward", swimBack = "Swimming backward", swimSide = "Swimming sideways",
 }
 
+-- Every account setting and its default. The options page and its reset buttons read
+-- their defaults from here too.
 local accountDefaults = {
   shown   = true,
   locked  = false,
   units   = "km",
   headline = "steps",  -- what the panel shows big: "steps" or "distance" today
   debug   = false,
+  countOneFoot = false,  -- calibration: the footfall count entered is one foot's
   anchor  = { point = "CENTER", x = 0, y = -180 },
   minimap = { hide = false },  -- LibDBIcon keeps the button's position here too
+  -- History chart: this month's distance for all characters, stacked by travel mode.
+  chart   = { view = "month", metric = "distance", scope = "account", stack = "mode", hidden = {} },
   strides = {},   -- ["Race:sex"][gait] = { sum, runs } from calibration
 }
+TB.DEFAULTS = accountDefaults
 
 function TB.NewLedger()
   local ledger = { steps = 0, jumps = 0, mountJumps = 0, guessed = 0, flights = 0, spent = 0,

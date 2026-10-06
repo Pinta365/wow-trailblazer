@@ -52,6 +52,19 @@ local function build()
   frame.TitleText:SetText("Trailblazer")
   tinsert(UISpecialFrames, frame:GetName())
 
+  local gear = CreateFrame("Button", nil, frame)
+  gear:SetSize(18, 18)
+  gear:SetPoint("RIGHT", frame.CloseButton, "LEFT", -2, 0)
+  gear:SetNormalAtlas("questlog-icon-setting")
+  gear:SetHighlightAtlas("questlog-icon-setting", "ADD")
+  gear:SetScript("OnClick", function() TB.Options.Open() end)
+  gear:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    GameTooltip:SetText("Options")
+    GameTooltip:Show()
+  end)
+  gear:SetScript("OnLeave", GameTooltip_Hide)
+
   for i, p in ipairs(pages) do
     local tab = CreateFrame("Button", nil, frame, "PanelTabButtonTemplate")
     tab:SetID(i)
@@ -77,6 +90,10 @@ function Window.Toggle(id)
     showPage(id)
     frame:Show()
   end
+end
+
+function Window.Close()
+  if frame then frame:Hide() end
 end
 
 function Window.Open(id)

@@ -130,6 +130,7 @@ end
 local handlers = {
   whoami = whoami,
   perf   = perf,
+  panel  = function() TB.Panel.SetShown(not TB.db.shown) end,
   show   = function() TB.Panel.SetShown(true) end,
   hide   = function() TB.Panel.SetShown(false) end,
   lock   = function() TB.db.locked = true;  TB.Say("Panel locked.") end,
@@ -177,15 +178,29 @@ SlashCmdList.TRAILBLAZER = function(input)
     handler(arg)
   else
     TB.Say("Commands: /trailblazer (or /trail) followed by")
-    print("    history, milestones, stats, options, show, hide, lock, unlock,")
+    print("    history, milestones, panel, stats, options, show, hide, lock, unlock,")
     print("    units metric / imperial, calibrate, reset (reset all erases this character)")
     print("    Diagnostics: debug, strides, perf, whoami")
   end
 end
 
+-- One set of clicks for the panel, the broker, the minimap button and the addon
+-- compartment: left for history, right for milestones, middle for options.
+TB.CLICK_HINT = "Left-click for history, right-click for milestones, middle-click for options"
+
+function TB.LauncherClick(mouseButton)
+  if mouseButton == "RightButton" then
+    TB.MilestonesPage.Toggle()
+  elseif mouseButton == "MiddleButton" then
+    TB.Options.Open()
+  else
+    TB.HistoryPage.Toggle()
+  end
+end
+
 -- Blizzard's addon compartment (the addons button on the minimap), wired up in the TOC.
 function Trailblazer_OnCompartmentClick(_, mouseButton)
-  if mouseButton == "RightButton" then TB.MilestonesPage.Toggle() else TB.HistoryPage.Toggle() end
+  TB.LauncherClick(mouseButton)
 end
 
 function Trailblazer_OnCompartmentEnter(_, button)
@@ -193,7 +208,7 @@ function Trailblazer_OnCompartmentEnter(_, button)
   GameTooltip:AddLine("Trailblazer")
   GameTooltip:AddDoubleLine("Distance today", TB.Distance(TB.History.DistanceToday()), 1, 1, 1, 1, 1, 1)
   GameTooltip:AddDoubleLine("Steps today", TB.Grouped(TB.History.StepsToday()), 1, 1, 1, 1, 1, 1)
-  GameTooltip:AddLine("Left-click for history, right-click for milestones", 0.5, 0.5, 0.5)
+  GameTooltip:AddLine(TB.CLICK_HINT, 0.5, 0.5, 0.5, true)
   GameTooltip:Show()
 end
 

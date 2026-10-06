@@ -22,11 +22,9 @@ function Broker.Start()
     label = NAME,
     text = "",
     icon = "Interface\\AddOns\\Trailblazer\\media\\minimap",
-    OnClick = function(_, mouseButton)
-      if mouseButton == "RightButton" then TB.MilestonesPage.Toggle() else TB.HistoryPage.Toggle() end
-    end,
+    OnClick = function(_, mouseButton) TB.LauncherClick(mouseButton) end,
     OnTooltipShow = function(tip)
-      TB.Panel.FillTooltip(tip, "Left-click for history, right-click for milestones")
+      TB.Panel.FillTooltip(tip, TB.CLICK_HINT)
     end,
   })
   local icon = library("LibDBIcon-1.0")

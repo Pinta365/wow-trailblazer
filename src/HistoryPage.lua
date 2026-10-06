@@ -713,13 +713,6 @@ local function build(pane)
 end
 
 TB.Window.Register("history", "History", function(pane)
-  TB.db.chart = TB.db.chart or {}
-  -- First open: this month's distance for all characters, stacked by travel mode.
-  TB.db.chart.view = TB.db.chart.view or "month"
-  TB.db.chart.metric = TB.db.chart.metric or "distance"
-  TB.db.chart.scope = TB.db.chart.scope or "account"
-  TB.db.chart.stack = TB.db.chart.stack or "mode"
-  TB.db.chart.hidden = TB.db.chart.hidden or {}
   build(pane)
 end)
 
@@ -729,6 +722,11 @@ end
 
 function HistoryPage.Toggle()
   TB.Window.Toggle("history")
+end
+
+-- Redraws an open window now, after its chart settings changed from outside.
+function HistoryPage.Redraw()
+  if win and win:IsVisible() then render() end
 end
 
 -- Keeps an open window current while travelling, throttled since a redraw makes garbage.

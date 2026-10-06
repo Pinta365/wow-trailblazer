@@ -39,13 +39,14 @@ You can download Trailblazer from these popular sources:
 | `milestones` | Open the Milestones tab |
 | `stats` | Print today's, the session's and all-time totals |
 | `options` | Open the options page |
+| `panel` | Toggle the panel |
 | `show`, `hide` | Show or hide the panel |
 | `lock`, `unlock` | Lock or unlock the panel's position |
 | `units metric` / `units imperial` | Switch between km and m, or miles and feet (`km` / `mi` work too) |
 | `calibrate` | Open the stride calibration window |
 | `reset` | Reset the session totals (`reset all` erases this character's history) |
 
-Right-click the panel to open the history. On the minimap button, the broker and the minimap's addons menu: left-click for the history, right-click for milestones.
+On the panel, the minimap button, the broker and the minimap's addons menu: left-click for the history, right-click for milestones, middle-click for options. The gear in the Trailblazer window's title bar also opens options.
 
 ### Diagnostics
 
